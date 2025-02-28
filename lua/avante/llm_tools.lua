@@ -521,34 +521,13 @@ function M.python(opts, on_log)
   if not Path:new(abs_path):exists() then return nil, "Path not found: " .. abs_path end
   if on_log then on_log("cwd: " .. abs_path) end
   if on_log then on_log("code:\n" .. opts.code) end
-  local container_image = opts.container_image or "python:3.11-slim-bookworm"
-  if
-    not M.confirm(
-      "Are you sure you want to run the following python code in the `"
-        .. container_image
-        .. "` container, in the directory: `"
-        .. abs_path
-        .. "`?\n"
-        .. opts.code
-    )
-  then
-    return nil, "User canceled"
-  end
-  if vim.fn.executable("docker") == 0 then return nil, "Python tool is not available to execute any code" end
+  if vim.fn.executable("python3") == 0 then return nil, "Python tool is not available to execute any code" end
   ---change cwd to abs_path
   local old_cwd = vim.fn.getcwd()
 
   vim.fn.chdir(abs_path)
   local output = vim
     .system({
-      "docker",
-      "run",
-      "--rm",
-      "-v",
-      abs_path .. ":" .. abs_path,
-      "-w",
-      abs_path,
-      container_image,
       "python",
       "-c",
       opts.code,
