@@ -2965,7 +2965,7 @@ function Sidebar:render(opts)
     end,
   })
 
-  self:create_selected_code_container()
+  -- self:create_selected_code_container()
 
   self:on_mount(opts)
 
